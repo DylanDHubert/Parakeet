@@ -1,6 +1,9 @@
 from openai import OpenAI
+from dotenv import load_dotenv
+import os
 
-KEY = "your-key-here"
+load_dotenv()
+KEY = os.getenv("API_KEY")
 
 def interact(messages, model="gpt-3.5-turbo"):
     """
