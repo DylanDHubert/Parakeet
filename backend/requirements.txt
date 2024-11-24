@@ -1,2 +1,6 @@
 flask
+flask-cors
 watchdog
+python-dotenv
+openai
+google-generativeai

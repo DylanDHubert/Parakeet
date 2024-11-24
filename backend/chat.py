@@ -1,23 +1,17 @@
 from openai import OpenAI
+import google.generativeai as genai
+
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
-KEY = os.getenv("API_KEY")
 
-def interact(messages, model="gpt-3.5-turbo"):
-    """
+api_key = os.getenv("API_KEY_google")
 
-    :param messages: Ex:    [
-                                {"role": "system", "content": "INIT PROMPT HERE"},
-                                {"role": "user", "content": "MESSAGE 1"}
-                            ]
-    :param model: OpenAI Model
-    :return: response from OpenAI Model
-    """
-    client = OpenAI(api_key=KEY)
-    completion = client.chat.completions.create(
-        model=model,
-        messages=messages)
-    return completion.choices[0].message
 
+def interact(messages, api_key=api_key):
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    chat = model.start_chat(history=messages[:-1])
+    response = chat.send_message(messages[-1])
+    return response.text
