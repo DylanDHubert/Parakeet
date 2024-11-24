@@ -38,7 +38,7 @@ class ChangeLogger(FileSystemEventHandler):
                 change = {"type":"MODIFY",
                           "path": event.src_path,
                           "time": datetime.datetime.now(),
-                          "change": diff}
+                          "changes": diff}
                 self.log.append(change)
                 print(f"FILE MODIFIED: {event.src_path} AT: {datetime.datetime.now()}")
                 if diff:
