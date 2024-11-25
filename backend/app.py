@@ -43,7 +43,7 @@ def scan():
             message += f"CHANGE OF TYPE {event['type']} IN FILE {event['path']} AT {event['time']}"
             # TODO ADD ".IGNORE" "FILTERING" SYSTEM AND FILTER BEFORE SHOWING CHANGE, IE. DON'T SHOW CHANGE IN .env FILE
             if event['changes']: message += " " + "CHANGES: " + event['changes']
-        message += "WHEN ASKED GENREICALLY ABOUT THIS UPDATE, RESPOND IN ONLY 1 OR TWO SENTENCES."
+        message += "WHEN ASKED GENERICALLY ABOUT THIS UPDATE, RESPOND IN ONLY 1 OR TWO SENTENCES."
         message += "<FOR FRONTEND: DO NOT DISPLAY>"
         chat_log.append({"role": "user", "parts": message})
         event_handler.update()  # UPDATE EVENT HANDLER (PUSHES LOG TO event_handler.HISTORY & CLEARS event_handler.LOG)

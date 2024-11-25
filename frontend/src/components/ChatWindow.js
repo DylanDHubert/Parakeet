@@ -65,7 +65,7 @@ const ChatWindow = () => {
               margin: "5px 5px",
             }}
           >
-            <b>{entry.role === "user" ? "You" : "Assistant"}:</b>{" "}
+            <b>{entry.role === "user" ? "You" : "PK–Version[0.1.12]"}:</b>{" "}
             <ReactMarkdown>{entry.parts}</ReactMarkdown>
           </div>
         ))}
