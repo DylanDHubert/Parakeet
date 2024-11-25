@@ -119,7 +119,6 @@ def context():
 
 
 def passes_filter(filepath, filter_list):
-    print(filepath)
     for pattern in filter_list:
         # CASE 1: file.filetype
         if (filepath == pattern) or (filepath.endswith(pattern)): return False
@@ -127,9 +126,9 @@ def passes_filter(filepath, filter_list):
         if pattern.startswith("*"):
             if filepath.endswith(pattern[1:]): return False
         # CASE 3: directory/*
-        if pattern.endswith("*"):
-            if pattern[1:] in filepath: return False
-        return True
+        if pattern.endswith("/*"):
+            if pattern[:-2] in filepath: return False
+    return True
 
 
 if __name__ == "__main__":
