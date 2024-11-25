@@ -86,6 +86,7 @@ const ChatWindow = () => {
         }}
       />
       <button
+        id="submit-button"
         onClick={sendMessage}
         style={{
           padding: "10px 20px",

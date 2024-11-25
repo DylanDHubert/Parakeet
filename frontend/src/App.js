@@ -35,14 +35,19 @@ function App() {
           </div>
         </div>
       </header>
+
       <main className="main-content">
-        <div className="buttons">
-          <button>CLEAR HISTORY</button>
-          <button>CLEAR LOG</button>
-          <button>UPDATE MEMORY FROM HISTORY</button>
-          <button onClick={handleUpdateMemory}>UPDATE MEMORY FROM LOG</button>
+        <div id="left">
+            <div>top</div>
+            <div>bottom</div>
         </div>
-        <ChatWindow />
+        <div id="right">
+            <div className="buttons">
+              <button>CLEAR LOG</button>
+              <button onClick={handleUpdateMemory}>UPDATE MEMORY FROM LOG</button>
+            </div>
+            <ChatWindow />
+        </div>
       </main>
     </div>
   );

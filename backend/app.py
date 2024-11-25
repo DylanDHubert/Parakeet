@@ -2,11 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from scanner import monitor
 from chat import interact
+import os
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
-(observer, event_handler) = monitor(path="../testfolder")
+path = "../"
+
+(observer, event_handler) = monitor(path=path)
 
 live = False
 chat_log = []
