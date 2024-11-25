@@ -1,111 +1,102 @@
 import React, { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 
 const ChatWindow = () => {
-const [message, setMessage] = useState("");
-const [chatLog, setChatLog] = useState([]);
+  const [message, setMessage] = useState("");
+  const [chatLog, setChatLog] = useState([]);
 
-// FETCH GLOBAL CHAT LOG FROM SERVER
-const fetchChatLog = async () => {
-try {
-const response = await fetch("http://localhost:5000/chat-log");
-const data = await response.json();
-// FILTER OUT MESSAGES THAT END WITH "<FOR FRONTEND: DO NOT DISPLAY>"
-const filteredData = data.filter(
-  (entry) => !(entry.role === "user" && entry.parts.endsWith("<FOR FRONTEND: DO NOT DISPLAY>"))
-);
-setChatLog(filteredData); // UPDATE CHAT LOG STATE
-} catch (error) {
-console.error("Error fetching chat log:", error);
-}
-};
+  const fetchChatLog = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/chat-log");
+      const data = await response.json();
+      const filteredData = data.filter(
+        (entry) => !(entry.role === "user" && entry.parts.endsWith("<FOR FRONTEND: DO NOT DISPLAY>"))
+      );
+      setChatLog(filteredData);
+    } catch (error) {
+      console.error("Error fetching chat log:", error);
+    }
+  };
 
-// SEND MESSAGE TO SERVER
-const sendMessage = async () => {
-if (!message.trim()) return;
+  const sendMessage = async () => {
+    if (!message.trim()) return;
+    try {
+      await fetch("http://localhost:5000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+      await fetchChatLog();
+    } catch (error) {
+      console.error("Error communicating with the server:", error);
+    }
+    setMessage("");
+  };
 
-try {
-  const response = await fetch("http://localhost:5000/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
-  });
+  useEffect(() => {
+    fetchChatLog();
+  }, []);
 
-  const data = await response.json();
+  useEffect(() => {
+    const chatLogDiv = document.getElementById("chat-log");
+    if (chatLogDiv) {
+      chatLogDiv.scrollTop = chatLogDiv.scrollHeight;
+    }
+  }, [chatLog]);
 
-  // REFRESH CHAT LOG AFTER SENDING A MESSAGE
-  await fetchChatLog();
-} catch (error) {
-  console.error("Error communicating with the server:", error);
-}
-
-setMessage(""); // CLEAR INPUT BOX
-};
-
-// FETCH CHAT LOG ON INITIAL RENDER
-useEffect(() => {
-fetchChatLog();
-}, []);
-
-// AUTO SCROLL TO BOTTOM WHEN CHAT LOG UPDATES
-useEffect(() => {
-const chatLogDiv = document.getElementById("chat-log");
-if (chatLogDiv) {
-  chatLogDiv.scrollTop = chatLogDiv.scrollHeight;
-}
-}, [chatLog]);
-
-return (
-<div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-  <div
-    id="chat-log"
-    style={{
-      height: "400px",
-      overflowY: "scroll",
-      border: "1px solid #ccc",
-      padding: "10px",
-      marginBottom: "10px",
-    }}
-  >
-    {chatLog.map((entry, index) => (
+  return (
+    <div style={{ maxWidth: "100vw", margin: "0 auto", padding: "20px" }}>
       <div
-        key={index}
+        id="chat-log"
         style={{
-          textAlign: entry.role === "user" ? "right" : "left",
-          margin: "5px 0",
+          height: "50vh",
+          overflowY: "scroll",
+          border: "1px solid",
+          borderRadius: "4px",
+          padding: "10px",
+          marginBottom: "20px",
         }}
       >
-        <b>{entry.role === "user" ? "You" : "Assistant"}:</b>{" "}
-        <span>{entry.parts}</span>
+        {chatLog.map((entry, index) => (
+          <div
+            key={index}
+            style={{
+              textAlign: entry.role === "user" ? "right" : "left",
+              margin: "5px 5px",
+            }}
+          >
+            <b>{entry.role === "user" ? "You" : "Assistant"}:</b>{" "}
+            <ReactMarkdown>{entry.parts}</ReactMarkdown>
+          </div>
+        ))}
       </div>
-    ))}
-  </div>
-  <input
-    type="text"
-    value={message}
-    onChange={(e) => setMessage(e.target.value)}
-    placeholder="Type your message here..."
-    style={{
-      width: "80%",
-      padding: "10px",
-      marginRight: "10px",
-      border: "1px solid #ccc",
-      borderRadius: "0px",
-    }}
-  />
-  <button
-    onClick={sendMessage}
-    style={{
-      padding: "10px 20px",
-      backgroundColor: "#007bff",
-      color: "#fff",
-      border: "none",
-      borderRadius: "0px",
-    }}
-  >
-    Send
-  </button>
-</div>
-);
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="TYPE YOUR MESSAGE HERE... (RESPONSE CAN BE SLOW)"
+        style={{
+          width: "75%",
+          padding: "10px",
+          marginRight: "20px",
+          border: "1px solid",
+          borderRadius: "4px",
+          fontFamily: "courier new, monospace",
+          fontSize: "15px",
+        }}
+      />
+      <button
+        onClick={sendMessage}
+        style={{
+          padding: "10px 20px",
+          fontSize: "16px",
+          cursor: "pointer",
+        }}
+      >
+        SEND
+      </button>
+    </div>
+  );
 };
 
 export default ChatWindow;
