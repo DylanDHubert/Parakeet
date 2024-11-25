@@ -26,6 +26,12 @@ def get_chat_log():
     return jsonify(chat_log)
 
 
+@app.route("/clear", methods=["GET"])
+def clear():
+    event_handler.update()
+    return jsonify({"status": True})
+
+
 def generate_message_from_event_log(event_log):
     message = ""
     for event in event_log:
