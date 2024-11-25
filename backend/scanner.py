@@ -41,10 +41,6 @@ class ChangeLogger(FileSystemEventHandler):
                           "changes": diff}
                 self.log.append(change)
                 print(f"FILE MODIFIED: {event.src_path} AT: {datetime.datetime.now()}")
-                if diff:
-                    print(f"CHANGES:\n{diff}")
-                else:
-                    print("No significant changes detected.")
 
             except Exception as e:
                 print(f"Error reading file {event.src_path}: {e}")
