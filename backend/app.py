@@ -26,27 +26,31 @@ def get_chat_log():
     return jsonify(chat_log)
 
 
+def generate_message_from_event_log(event_log):
+    message = ""
+    for event in event_log:
+        message += f"CHANGE OF TYPE {event['type']} IN FILE {event['path']} AT {event['time']}"
+        if event['changes']: message += " " + "CHANGES: " + event['changes']
+    message += "<FOR FRONTEND: DO NOT DISPLAY>"
+    return message
+
 # SCAN FOR CHANGES
 @app.route("/scan", methods=["GET"])
 def scan():
     global chat_log
-    log = event_handler.log  # GET LOG FROM EVENT HANDLER
-    if log:
-        log = [event for event in log if not filter(event['path'], get_ignore_list())]
-    if log:
-        message = ""
-        for event in log:
-            message += f"CHANGE OF TYPE {event['type']} IN FILE {event['path']} AT {event['time']}"
-            if event['changes']: message += " " + "CHANGES: " + event['changes']
-        message += "WHEN ASKED GENERICALLY ABOUT THIS UPDATE, RESPOND IN ONLY 1 OR TWO SENTENCES."
-        message += "<FOR FRONTEND: DO NOT DISPLAY>"
+    event_log = event_handler.log  # GET LOG FROM EVENT HANDLER
+
+    event_log = [event for event in event_log if passes_filter(event['path'], get_ignore_list())]
+
+    if event_log:
+        message = generate_message_from_event_log(event_log)
         chat_log.append({"role": "user", "parts": message})
         event_handler.update()  # UPDATE EVENT HANDLER (PUSHES LOG TO event_handler.HISTORY & CLEARS event_handler.LOG)
     else:
         print("NO CHANGES.")
         pass  # THIS MUST CHANGE
 
-    return jsonify({"log": log})  # RETURN JSONIFIED LOG
+    return jsonify({"log": event_log})  # RETURN JSONIFIED LOG
 
 
 @app.route("/chat", methods=["POST"])
@@ -69,6 +73,8 @@ ignore_list = []
 
 def get_ignore_list():
     global ignore_list
+    if not ignore_list:
+        ignore_list = generate_ignore_list()
     return ignore_list
 
 
@@ -87,26 +93,43 @@ def ignore():
     return jsonify({"ignored_files": get_ignore_list()})
 
 
-@app.route("/context", methods=["GET"])
-def pk_context():
+context_list = []
+
+
+def get_context_list():
+    global context_list
+    if not context_list:
+        context_list = generate_context_list()
+    return context_list
+
+
+def generate_context_list():
     file = os.path.join(get_path(), ".pk-context")
-    if not os.path.exists(file):
-        return jsonify({"error": "No .pk-context file found"}), 404
+    if not os.path.exists(file): return []
     try:
         with open(file, 'r') as f:
-            context_list = [line.strip() for line in f if line.strip()]
+            return [line.strip() for line in f if line.strip()]
     except Exception as e:
-        return jsonify({"error": f"Error reading .pk-context file: {str(e)}"}), 500
-    return jsonify({"context_files": context_list})
+        return [f"Error {e} in reading .pk-context"]
 
 
-def filter(path, filter_list):
+@app.route("/context", methods=["GET"])
+def context():
+    return jsonify({"context_files": get_context_list()})
+
+
+def passes_filter(filepath, filter_list):
+    print(filepath)
     for pattern in filter_list:
         # CASE 1: file.filetype
-        if path == pattern: return True
-        # CASE 1: file.filetype
-        # CASE 1: file.filetype
-        # CASE 1: file.filetype
+        if (filepath == pattern) or (filepath.endswith(pattern)): return False
+        # CASE 2: *.filetype
+        if pattern.startswith("*"):
+            if filepath.endswith(pattern[1:]): return False
+        # CASE 3: directory/*
+        if pattern.endswith("*"):
+            if pattern[1:] in filepath: return False
+        return True
 
 
 if __name__ == "__main__":
