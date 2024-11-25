@@ -90,7 +90,7 @@ def generate_ignore_list():
 
 @app.route("/ignore", methods=["GET"])
 def ignore():
-    return jsonify({"ignored_files": get_ignore_list()})
+    return jsonify({"ignore_list": get_ignore_list()})
 
 
 context_list = []
@@ -115,7 +115,7 @@ def generate_context_list():
 
 @app.route("/context", methods=["GET"])
 def context():
-    return jsonify({"context_files": get_context_list()})
+    return jsonify({"context_list": get_context_list()})
 
 
 def passes_filter(filepath, filter_list):

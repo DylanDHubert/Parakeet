@@ -1,4 +1,4 @@
 .env
+.node_modules/*
 .git/*
-node_modules/*
-backend/*
+.idea/*
