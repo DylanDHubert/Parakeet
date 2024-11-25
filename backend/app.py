@@ -1,5 +1,3 @@
-import random
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from scanner import monitor
@@ -8,7 +6,7 @@ from chat import interact
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
-(observer, event_handler) = monitor()
+(observer, event_handler) = monitor(path="../testfolder")
 
 live = False
 chat_log = []
@@ -35,16 +33,19 @@ def get_chat_log():
 def scan():
     global chat_log
     log = event_handler.log  # GET LOG FROM EVENT HANDLER
+    print(event_handler.log, event_handler.history)
     if log:
-        event_handler.update()  # UPDATE EVENT HANDLER (PUSHES LOG TO event_handler.HISTORY & CLEARS event_handler.LOG)
         message = ""
         for event in log:
             message += f"CHANGE OF TYPE {event['type']} IN FILE {event['path']} AT {event['time']}"
             # TODO ADD ".IGNORE" "FILTERING" SYSTEM AND FILTER BEFORE SHOWING CHANGE, IE. DON'T SHOW CHANGE IN .env FILE
             if event['changes']: message += " " + "CHANGES: " + event['changes']
+        message += "WHEN ASKED GENREICALLY ABOUT THIS UPDATE, RESPOND IN ONLY 1 OR TWO SENTENCES."
         message += "<FOR FRONTEND: DO NOT DISPLAY>"
         chat_log.append({"role": "user", "parts": message})
+        event_handler.update()  # UPDATE EVENT HANDLER (PUSHES LOG TO event_handler.HISTORY & CLEARS event_handler.LOG)
     else:
+        print("ERROR")
         pass  # THIS MUST CHANGE
 
     return jsonify({"log": log})  # RETURN JSONIFIED LOG

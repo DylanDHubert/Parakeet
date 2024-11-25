@@ -55,14 +55,17 @@ class ChangeLogger(FileSystemEventHandler):
             change = {"type":"CREATE",
                       "path": event.src_path,
                       "time": datetime.datetime.now(),
-                      "change": None}
+                      "changes": None}
             self.log.append(change)
             print(f"FILE CREATED: {event.src_path} AT: {datetime.datetime.now()}")
 
     def on_deleted(self, event):
         if not event.is_directory:
             if not self.valid(event.src_path): return
-            change = ("DELETE", event.src_path, datetime.datetime.now(), None)
+            change = {"type": "DELETE",
+                      "path": event.src_path,
+                      "time": datetime.datetime.now(),
+                      "changes": None}
             self.log.append(change)
             print(f"FILE DELETED: {event.src_path} AT: {datetime.datetime.now()}")
 
@@ -73,6 +76,7 @@ class ChangeLogger(FileSystemEventHandler):
     def valid(self, path):
         if path[-1] == "~":
             return False
+        elif path.endswith(".DS_Store"):  return False
         else:
             return True
 
