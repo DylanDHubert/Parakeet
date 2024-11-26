@@ -7,9 +7,14 @@ load_dotenv()
 
 api_key = os.getenv("API_KEY_google")
 
-
-def interact(messages, api_key=api_key):
+def interact(messages, api_key=api_key, context_files=None):
     genai.configure(api_key=api_key)
+
+    if context_files:
+        for filepath in context_files:
+            messages.append({"role": "user", "parts": read_file_as_string(filepath)})
+
+    print(messages)
     model = genai.GenerativeModel("gemini-1.5-flash")
     messages.insert(0, {"role": "user",
                         "parts": "You are 'Parakeet' a AI Robot Assistant who has (through text based updates) access to a directory."
@@ -38,3 +43,16 @@ def interact(messages, api_key=api_key):
     chat = model.start_chat(history=messages[:-1])
     response = chat.send_message(messages[-1])
     return response.text
+
+
+def read_file_as_string(file_path):
+    file_path = os.path.abspath(file_path)
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return str(file.read()) + "<FOR FRONTEND: DO NOT DISPLAY>"
+    except FileNotFoundError:
+        return f"Error: File not found at {file_path}"
+    except UnicodeDecodeError:
+        return "Error: File contains non-text content or unsupported encoding."
+    except Exception as e:
+        return f"An unexpected error occurred: {e}"

@@ -77,7 +77,8 @@ class ChangeLogger(FileSystemEventHandler):
             return True
 
 
-def monitor(path="."):
+def monitor(path=""):
+    path = "/" + path
     event_handler = ChangeLogger()
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)

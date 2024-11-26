@@ -4,7 +4,8 @@ from scanner import monitor
 from chat import interact
 import os
 
-path = "../"
+path = ""
+path = os.path.abspath(path)
 
 
 def get_path():
@@ -65,7 +66,7 @@ def chat():
 
     message = request.json.get("message")
     chat_log.append({"role": "user", "parts": message})
-    response = interact(chat_log)
+    response = interact(chat_log, context_files=get_context_list())
 
     if response:
         # UPDATE GLOBAL CHAT LOG
@@ -121,6 +122,7 @@ def generate_context_list():
 
 @app.route("/context", methods=["GET"])
 def context():
+    print(get_context_list())
     return jsonify({"context_list": get_context_list()})
 
 
