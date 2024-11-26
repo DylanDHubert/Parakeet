@@ -15,7 +15,7 @@ function App() {
         });
         if (response.ok) {
           const data = await response.json();
-          setIgnoreContent(data.ignore_list.join("\n") || "ADD FILES OR PATTERNS IN '.pk-ignore'.");
+          setIgnoreContent(data.ignore_list.join("\n") || ".pk-ignore excludes sensitive or unnecessary data from Parakeet. Files listed are monitored for changes but never included in the model, minimizing clutter and safeguarding secrets.\n\nCreate a '.pk-ignore' file in the root directory and add files.");
         } else {
           console.error("Failed to fetch ignore files:", response.status);
           setIgnoreContent("Error loading ignore files.");
@@ -38,7 +38,7 @@ function App() {
         if (response.ok) {
           const data = await response.json();
           setContextContent(
-            data.context_list.join("\n") || "ADD FILES OR PATTERNS IN '.pk-context'."
+            data.context_list.join("\n") || "Context for Parakeet ensures automatic synchronization:\n\n1. Files in .pk-context are fully scanned by Parakeet per prompt.\n\n2. Project directory changes (updates, creations, deletions) are logged.\n\nCreate a '.pk-context' file in the root directory and add context files."
           );
         } else {
           console.error("Failed to fetch context files:", response.status);
@@ -73,8 +73,13 @@ function App() {
     }
   };
 
-  const handleClear = async () => {
-        fetch("http://localhost:5000/clear", {
+  const HandleClearLog = async () => {
+        fetch("http://localhost:5000/clear-change-log", {
+        method: "GET",
+      })};
+
+  const HandleClearChat = async () => {
+        fetch("http://localhost:5000/clear-chat-log", {
         method: "GET",
       });
   }
@@ -90,17 +95,43 @@ function App() {
           document.getElementById("console").scrollTop =  document.getElementById("console").scrollHeight;
         } else {
           console.error("Failed to fetch data:", response.status);
-          document.getElementById("console").textContent = "Error loading data.";
+          document.getElementById("console").textContent = "ERROR LOADING DATA.";
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        document.getElementById("console").textContent = "Error fetching data.";
+        document.getElementById("console").textContent = "ERROR FETCHING DATA.";
       }
     };
 
     // Call the function
-    setInterval(populateConsole, 5000);
+    useEffect(() => {
+      const intervalId = setInterval(populateConsole, 5000);
+      return () => clearInterval(intervalId); // CLEANUP
+    }, []); // EMPTY DEPENDENCY ARRAY
 
+
+  const populateAPIKey = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/api-key", {
+                method: "GET",
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("apikey").textContent = data.text || "CREATE FILE '.pk-key' AND PASTE GOOGLE GEMINI API KEY";
+            }
+            else {
+                console.error("Failed to fetch data:", response.status);
+                document.getElementById("apikey").textContent = "ERROR LOADING API KEY";
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            document.getElementById("console").textContent = "ERROR FETCHING DATA.";
+        }
+  };
+  useEffect(() => {
+      const intervalId = setInterval(populateAPIKey, 5000);
+      return () => clearInterval(intervalId); // CLEANUP
+    }, []);
 
 
   return (
@@ -113,46 +144,31 @@ function App() {
             <p>Auto–Synchronized Coding Assistant</p>
           </div>
           <div className="header-button-container">
-            <button className="header-button">WORKING DIRECTORY</button>
-            <button className="header-button">SET API KEY</button>
-            <button className="header-button">SAVE CONTEXT</button>
-            <button className="header-button">LOAD CONTEXT</button>
+            <p><strong>API KEY:</strong></p>
+            <p id="apikey"></p>
           </div>
         </div>
       </header>
 
       <main className="main-content">
         <div id="left">
-          <p>CONTEXT FILES: (.pk-context)</p>
+          <p>CONTEXT FILES:</p>
           <textarea
             id="context"
             value={contextContent}
             readOnly
           />
-          <div>
-            Context is a two part system allowing Parakeet to be automatically up to date on a file system.
-          </div>
-          <div>
-            1. Files in '.pk-context' are automatically scanned (in their entirety) by Parakeet on a per-prompt basis.
-          </div>
-          <div>
-          2. Parakeet scans updates, creations, and deletions of all files within the project directory.
-          It logs these changes. This log can be fed to the model via [UPDATE CONTEXT FROM CHANGE LOG]
-            or, can be cleared via [CLEAR CHANGE LOG]
-          </div>
-          <p>IGNORE FILES: (.pk-ignore)</p>
+          <p>IGNORE FILES:</p>
           <textarea
             id="ignore"
             value={ignoreContent}
             readOnly
           />
-          <div>
-          The Ignore system (.pk-ignore) is like .gitignore, excluding sensitive or unimportant data from the model. Files listed are scanned for changes but never fed into the model, reducing clutter and protecting sensitive information.
-          </div>
         </div>
         <div id="right">
           <div className="buttons">
-            <button onClick={handleClear}>CLEAR CHANGE LOG</button>
+            <button onClick={HandleClearChat}>CLEAR CHAT LOG</button>
+            <button onClick={HandleClearLog}>CLEAR CHANGE LOG</button>
             <button onClick={handleUpdateMemory}>UPDATE CONTEXT FROM CHANGE LOG</button>
           </div>
           <ChatWindow />

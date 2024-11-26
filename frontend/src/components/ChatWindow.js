@@ -55,6 +55,7 @@ const ChatWindow = () => {
           borderRadius: "4px",
           padding: "10px",
           marginBottom: "20px",
+          backgroundColor: "#eee",
         }}
       >
         {chatLog.map((entry, index) => (
@@ -65,7 +66,7 @@ const ChatWindow = () => {
               margin: "5px 5px",
             }}
           >
-            <b>{entry.role === "user" ? "You" : "PK–Version[0.1.12]"}:</b>{" "}
+            <b>{entry.role === "user" ? "You" : "PK–Version[0.1.15+]"}:</b>{" "}
             <ReactMarkdown>{entry.parts}</ReactMarkdown>
           </div>
         ))}
