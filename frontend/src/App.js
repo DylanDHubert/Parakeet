@@ -79,6 +79,30 @@ function App() {
       });
   }
 
+  const populateConsole = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/get-change-log", {
+          method: "GET",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById("console").textContent = data.text || "COLD START OR PASSED TO MODEL";
+          document.getElementById("console").scrollTop =  document.getElementById("console").scrollHeight;
+        } else {
+          console.error("Failed to fetch data:", response.status);
+          document.getElementById("console").textContent = "Error loading data.";
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById("console").textContent = "Error fetching data.";
+      }
+    };
+
+    // Call the function
+    setInterval(populateConsole, 5000);
+
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -134,6 +158,9 @@ function App() {
           <ChatWindow />
         </div>
       </main>
+      <div id="bottom">
+        <div id="console"></div>
+      </div>
     </div>
   );
 }

@@ -70,7 +70,8 @@
 
 .main-content {
   width: 100%;
-  margin: 20px auto;
+  margin: 20px  auto;
+  margin-bottom: 0px;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -150,4 +151,23 @@ input {
   width: 100%;
   padding: 0px;
   box-sizing: border-box;
+}
+
+#bottom {
+    margin-top: 0px;
+    background-color: white;
+    border: 0px solid;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    align: center;
+    height: 20vh;
+}
+
+#bottom div {
+    border: 0px solid;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 100vw;
+    overflow-y: auto;
 }
