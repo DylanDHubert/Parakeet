@@ -73,6 +73,12 @@ function App() {
     }
   };
 
+  const handleClear = async () => {
+        fetch("http://localhost:5000/clear", {
+        method: "GET",
+      });
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -99,19 +105,30 @@ function App() {
             value={contextContent}
             readOnly
           />
+          <div>
+            Context is a two part system allowing Parakeet to be automatically up to date on a file system.
+          </div>
+          <div>
+            1. Files in '.pk-context' are automatically scanned (in their entirety) by Parakeet on a per-prompt basis.
+          </div>
+          <div>
+          2. Parakeet scans updates, creations, and deletions of all files within the project directory.
+          It logs these changes. This log can be fed to the model via [UPDATE CONTEXT FROM CHANGE LOG]
+            or, can be cleared via [CLEAR CHANGE LOG]
+          </div>
           <p>IGNORE FILES: (.pk-ignore)</p>
           <textarea
             id="ignore"
             value={ignoreContent}
             readOnly
           />
-          <div>1</div>
-          <div>1</div>
+          <div>
+          The Ignore system (.pk-ignore) is like .gitignore, excluding sensitive or unimportant data from the model. Files listed are scanned for changes but never fed into the model, reducing clutter and protecting sensitive information.
+          </div>
         </div>
         <div id="right">
           <div className="buttons">
-            <button>CONTEXTUALIZE</button>
-            <button>CLEAR CHANGE LOG</button>
+            <button onClick={handleClear}>CLEAR CHANGE LOG</button>
             <button onClick={handleUpdateMemory}>UPDATE CONTEXT FROM CHANGE LOG</button>
           </div>
           <ChatWindow />
