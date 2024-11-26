@@ -2,6 +2,11 @@
 
 ![](0.1.15.png)
 
+`DEV HISTORY:`
+
+![](0.1.14.png)
+![](0.1.13.png)
+
 `BACKLOG:`
 
 `0.1.14 —.pk-context & .pk-ignore (filtering system)` DONE
