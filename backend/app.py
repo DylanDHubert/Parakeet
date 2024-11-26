@@ -19,6 +19,24 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_cred
 (observer, event_handler) = monitor(path=get_path())
 
 chat_log = []
+user_api_key = "NO GOOGLE GEMINI API KEY FOUND"
+
+
+def api_key():
+    global user_api_key
+    api_key_path = os.path.join(get_path(), ".pk-key")
+    try:
+        with open(api_key_path, "r") as f:
+            user_api_key = f.read().strip()
+    except FileNotFoundError:
+        return "FILE NOT FOUND: 404"
+    except Exception as e:
+        return f"ERROR: {e}"
+
+
+@app.route("/api-key", methods=["GET"])
+def get_api_key():
+    return jsonify({"text": user_api_key})
 
 
 @app.route("/chat-log", methods=["GET"])
@@ -32,6 +50,19 @@ def get_change_log():
     return jsonify({"text": generate_message_from_event_log(event_handler.log, tag=False)})
 
 
+@app.route("/clear-change-log", methods=["GET"])
+def clear_change_log():
+    event_handler.update()
+    return jsonify({"status": True})
+
+
+@app.route("/clear-chat-log", methods=["GET"])
+def clear_chat_log():
+    global chat_log
+    chat_log = []
+    return jsonify({"status": True})
+
+
 def generate_message_from_event_log(event_log, tag=True):
     message = ""
     for event in event_log:
@@ -39,6 +70,7 @@ def generate_message_from_event_log(event_log, tag=True):
         if event['changes']: message += " " + "CHANGES: " + event['changes']
     if tag: message += "<FOR FRONTEND: DO NOT DISPLAY>"
     return message
+
 
 # SCAN FOR CHANGES
 @app.route("/scan", methods=["GET"])
@@ -65,7 +97,7 @@ def chat():
 
     message = request.json.get("message")
     chat_log.append({"role": "user", "parts": message})
-    response = interact(chat_log, context_files=get_context_list())
+    response = interact(chat_log, api_key=user_api_key, context_files=get_context_list())
 
     if response:
         # UPDATE GLOBAL CHAT LOG
@@ -139,6 +171,7 @@ def passes_filter(filepath, filter_list):
 
 
 if __name__ == "__main__":
+    api_key()
     app.run(debug=True)
     observer.stop()
     observer.join()

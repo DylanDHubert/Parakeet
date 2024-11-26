@@ -1,13 +1,8 @@
 import google.generativeai as genai
-
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
-
-api_key = os.getenv("API_KEY_google")
-
-def interact(messages, api_key=api_key, context_files=None):
+def interact(messages, api_key="", context_files=None):
+    if not api_key: return "NO API KEY FOUND: PLEASE CREATE FILE '.pk-api' AND PASTE GOOGLE GEMINI API KEY (FREE VERSION WORKS)"
     genai.configure(api_key=api_key)
 
     if context_files:
