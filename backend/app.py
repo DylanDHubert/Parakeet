@@ -27,18 +27,17 @@ def get_chat_log():
     return jsonify(chat_log)
 
 
-@app.route("/clear", methods=["GET"])
-def clear():
-    event_handler.update()
-    return jsonify({"status": True})
+@app.route("/get-change-log", methods=["GET"])
+def get_change_log():
+    return jsonify({"text": generate_message_from_event_log(event_handler.log, tag=False)})
 
 
-def generate_message_from_event_log(event_log):
+def generate_message_from_event_log(event_log, tag=True):
     message = ""
     for event in event_log:
         message += f"CHANGE OF TYPE {event['type']} IN FILE {event['path']} AT {event['time']}"
         if event['changes']: message += " " + "CHANGES: " + event['changes']
-    message += "<FOR FRONTEND: DO NOT DISPLAY>"
+    if tag: message += "<FOR FRONTEND: DO NOT DISPLAY>"
     return message
 
 # SCAN FOR CHANGES
