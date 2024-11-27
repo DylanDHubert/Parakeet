@@ -1,7 +1,7 @@
 `CURRRENT STATE:`
 
 0.2.0 ALPHA (LOCAL BUILD)
-![](0.2.0 ALPHA.png)
+![](0.2.0ALPHA.png)
 
 `DEV HISTORY:`
 
