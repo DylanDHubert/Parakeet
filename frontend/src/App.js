@@ -7,7 +7,6 @@ function App() {
   const [ignoreContent, setIgnoreContent] = useState("Loading ignore list...");
   const [contextContent, setContextContent] = useState("Loading context list...");
 
-  useEffect(() => {
     const fetchIgnoreFiles = async () => {
       try {
         const response = await fetch("http://localhost:5000/ignore", {
@@ -26,10 +25,11 @@ function App() {
       }
     };
 
-    fetchIgnoreFiles();
-      }, []);
+    useEffect(() => {
+      const intervalId = setInterval(fetchIgnoreFiles, 5000);
+      return () => clearInterval(intervalId); // CLEANUP
+    }, []); // EMPTY DEPENDENCY ARRAY
 
-  useEffect(() => {
     const fetchContextFiles = async () => {
       try {
         const response = await fetch("http://localhost:5000/context", {
@@ -50,8 +50,10 @@ function App() {
       }
     };
 
-    fetchContextFiles();
-  }, []);
+    useEffect(() => {
+      const intervalId = setInterval(fetchContextFiles, 5000);
+      return () => clearInterval(intervalId); // CLEANUP
+    }, []); // EMPTY DEPENDENCY ARRAY
 
   const handleUpdateMemory = async () => {
     try {
@@ -76,13 +78,16 @@ function App() {
   const HandleClearLog = async () => {
         fetch("http://localhost:5000/clear-change-log", {
         method: "GET",
-      })};
+      });
+      refreshPage();
+   };
 
   const HandleClearChat = async () => {
         fetch("http://localhost:5000/clear-chat-log", {
         method: "GET",
       });
-  }
+      refreshPage();
+  };
 
   const populateConsole = async () => {
       try {
@@ -133,6 +138,14 @@ function App() {
       return () => clearInterval(intervalId); // CLEANUP
     }, []);
 
+  const refreshPage = async () => {
+        try {
+            populateAPIKey();
+            populateConsole();
+            fetchContextFiles();
+            fetchIgnoreFiles();
+        } catch { }
+  }
 
   return (
     <div className="App">
@@ -142,10 +155,12 @@ function App() {
           <div className="header-text">
             <h1>Parakeet!</h1>
             <p>Auto–Synchronized Coding Assistant</p>
+            <p id="version"><strong>0.2.0 ALPHA</strong></p>
           </div>
           <div className="header-button-container">
             <p><strong>API KEY:</strong></p>
             <p id="apikey"></p>
+            <button id="refresh" onClick={refreshPage}>REFRESH ↻ PAGE</button>
           </div>
         </div>
       </header>
@@ -171,7 +186,7 @@ function App() {
             <button onClick={HandleClearLog}>CLEAR CHANGE LOG</button>
             <button onClick={handleUpdateMemory}>UPDATE CONTEXT FROM CHANGE LOG</button>
           </div>
-          <ChatWindow />
+          <ChatWindow id="chat-window"/>
         </div>
       </main>
       <div id="bottom">
