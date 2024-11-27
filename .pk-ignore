@@ -1,6 +1,0 @@
-.env
-.cache/*
-.node_modules/*
-.idea/*
-.git/*
-.pk-key

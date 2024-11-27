@@ -19,7 +19,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_cred
 (observer, event_handler) = monitor(path=get_path())
 
 chat_log = []
-user_api_key = "NO GOOGLE GEMINI API KEY FOUND"
+user_api_key = "CREATE FILE '.pk-key' AND PASTE GOOGLE GEMINI API KEY"
 
 
 def api_key():
@@ -36,6 +36,7 @@ def api_key():
 
 @app.route("/api-key", methods=["GET"])
 def get_api_key():
+    api_key()
     return jsonify({"text": user_api_key})
 
 
@@ -66,7 +67,7 @@ def clear_chat_log():
 def generate_message_from_event_log(event_log, tag=True):
     message = ""
     for event in event_log:
-        message += f"CHANGE OF TYPE {event['type']} IN FILE {event['path']} AT {event['time']}"
+        message += f" CHANGE OF TYPE {event['type']} IN FILE {event['path']} AT {event['time']}"
         if event['changes']: message += " " + "CHANGES: " + event['changes']
     if tag: message += "<FOR FRONTEND: DO NOT DISPLAY>"
     return message
@@ -111,8 +112,7 @@ ignore_list = []
 
 def get_ignore_list():
     global ignore_list
-    if not ignore_list:
-        ignore_list = generate_ignore_list()
+    ignore_list = generate_ignore_list()
     return ignore_list
 
 
@@ -136,8 +136,7 @@ context_list = []
 
 def get_context_list():
     global context_list
-    if not context_list:
-        context_list = generate_context_list()
+    context_list = generate_context_list()
     return context_list
 
 
@@ -153,7 +152,6 @@ def generate_context_list():
 
 @app.route("/context", methods=["GET"])
 def context():
-    print(get_context_list())
     return jsonify({"context_list": get_context_list()})
 
 

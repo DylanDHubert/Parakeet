@@ -72,9 +72,10 @@ class ChangeLogger(FileSystemEventHandler):
     def valid(self, path):
         if path[-1] == "~":
             return False
-        elif path.endswith(".DS_Store"):  return False
         else:
-            return True
+            for blacklist in [".DS_Store", ".git", ".vscode", ".idea", "__pycache__", "cache", "temp", "logs", "dist", "build", "out", "bin"]:
+                if blacklist in path: return False
+        return True
 
 
 def monitor(path=""):
