@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from scanner import monitor
 from chat import interact
@@ -12,14 +12,22 @@ def get_path():
     global path
     return path
 
+app = Flask(__name__, static_folder="build", static_url_path="")
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+# CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
 (observer, event_handler) = monitor(path=get_path())
 
 chat_log = []
 user_api_key = "CREATE FILE '.pk-key' AND PASTE GOOGLE GEMINI API KEY"
+
+@app.route('/')
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.errorhandler(404)
+def not_found(e):
+    return send_from_directory(app.static_folder, 'index.html')
 
 
 def api_key():
