@@ -16,7 +16,8 @@
 
 `BACKLOG:`
 
-`— ELECTRON RELEASE`
+FIGURE OUT HOW TO DEPLOY...
+CODE FORMATTING (prism.js or highlight.js)
 
 `DOCUMENTATION:`
 
