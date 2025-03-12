@@ -1,3 +1,9 @@
+`DOCUMENTATION:`
+
+`CLI 1—` `cd backend` `python app.py`
+`CLI 2—` `cd frontend` `npm start` `(run npm install before npm start if needed)`
+
+
 `CURRRENT STATE:`
 
 0.2.0 ALPHA (LOCAL BUILD)
@@ -18,10 +24,5 @@
 
 FIGURE OUT HOW TO DEPLOY...
 CODE FORMATTING (prism.js or highlight.js)
-
-`DOCUMENTATION:`
-
-python app.py
-
 
 
