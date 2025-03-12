@@ -2,3 +2,4 @@ backend/app.py
 backend/scanner.py
 backend/chat.py
 README.md
+frontend/src/app.js

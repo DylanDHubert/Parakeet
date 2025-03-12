@@ -2,9 +2,11 @@
 
 `CLI 1—`
 ```
-cd backend
-python app.py
+python backend/app.py
 ```
+`**very important: run app.py from base diretory.**`
+
+`**therefor: do not run [cd backend -> python app.py] instead use above command**`
 
 `CLI 2—` 
 ```
@@ -14,7 +16,7 @@ npm start
 ```
 
 
-`in order to converse with the LLM you will need an API key from Gemini— save it as text in a file named ".pk-key"`
+`**in order to converse with the LLM you will need an API key from Gemini— save it as text in a file named ".pk-key"**`
 
 `CURRRENT STATE:`
 
