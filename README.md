@@ -4,6 +4,9 @@
 
 `CLI 2—` `cd frontend` `npm start` `(run npm install before npm start if needed)`
 
+```
+in order to converse with the LLM you will need an API key from Gemini— save it as text in a file named ".pk-key"
+```
 
 `CURRRENT STATE:`
 
