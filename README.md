@@ -1,3 +1,21 @@
+`DOCUMENTATION:`
+
+`CLI 1—`
+```
+cd backend
+python app.py
+```
+
+`CLI 2—` 
+```
+cd frontend
+npm install (if needed)
+npm start
+```
+
+
+`in order to converse with the LLM you will need an API key from Gemini— save it as text in a file named ".pk-key"`
+
 `CURRRENT STATE:`
 
 0.2.0 ALPHA (LOCAL BUILD)
@@ -18,10 +36,5 @@
 
 FIGURE OUT HOW TO DEPLOY...
 CODE FORMATTING (prism.js or highlight.js)
-
-`DOCUMENTATION:`
-
-python app.py
-
 
 
