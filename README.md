@@ -1,6 +1,7 @@
 `DOCUMENTATION:`
 
 `CLI 1—` `cd backend` `python app.py`
+
 `CLI 2—` `cd frontend` `npm start` `(run npm install before npm start if needed)`
 
 
