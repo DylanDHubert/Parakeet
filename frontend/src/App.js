@@ -156,6 +156,7 @@ function App() {
             <h1>Parakeet!</h1>
             <p>Auto–Synchronized Coding Assistant</p>
             <p id="version"><strong>0.2.0 ALPHA</strong></p>
+            <p><i>Dylan Hubert</i></p>
           </div>
           <div className="header-button-container">
             <p><strong>API KEY:</strong></p>
