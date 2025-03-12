@@ -1,12 +1,20 @@
 `DOCUMENTATION:`
 
-`CLI 1—` `cd backend` `python app.py`
-
-`CLI 2—` `cd frontend` `npm start` `(run npm install before npm start if needed)`
-
+`CLI 1—`
 ```
-in order to converse with the LLM you will need an API key from Gemini— save it as text in a file named ".pk-key"
+cd backend
+python app.py
 ```
+
+`CLI 2—` 
+```
+cd frontend
+npm install (if needed)
+npm start
+```
+
+
+`in order to converse with the LLM you will need an API key from Gemini— save it as text in a file named ".pk-key"`
 
 `CURRRENT STATE:`
 
